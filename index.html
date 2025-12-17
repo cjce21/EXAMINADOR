@@ -343,7 +343,7 @@
 
     </style>
 </head>
-<body class="text-slate-800 font-sans antialiased">
+<body class="text-slate-800 font-sans antialiased" oncontextmenu="return false;">
 
     <!-- PRELOADER -->
     <div id="initial-loader" class="fixed inset-0 z-[300] flex items-center justify-center bg-montessori-lightBlue transition-all duration-700">
@@ -770,7 +770,6 @@
                 span.style.left = `${left}%`;
                 span.style.animationDuration = `${duration}s`;
                 span.style.animationDelay = `${delay}s`;
-                span.style.fontSize = `${size}rem`;
                 container.appendChild(span);
             }
         }
@@ -1451,8 +1450,38 @@
                 }
             };
         }
+
+        // --- MEDIDAS DE SEGURIDAD CASUAL (AntidevTools) ---
+        // NOTA: Estas medidas solo previenen la inspección del código por parte de usuarios casuales
+        // y no ofrecen seguridad real contra usuarios con conocimientos técnicos.
+
+        document.addEventListener('keydown', function(e) {
+            // Deshabilitar F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                // Eliminado: showToast("Acceso restringido: La tecla F12 está deshabilitada.");
+                return;
+            }
+            
+            // Atajos comunes de DevTools y Ver Código Fuente
+            const isCtrlOrCmd = e.ctrlKey || e.metaKey; // Ctrl para Windows/Linux, Cmd para Mac
+
+            if (isCtrlOrCmd) {
+                // Ctrl+Shift+I (Windows/Linux DevTools)
+                // Ctrl+Shift+J (Windows/Linux Console)
+                // Ctrl+Shift+C (Inspeccionar elemento)
+                // Ctrl+U (Ver Código Fuente)
+                // Ctrl+S (Guardar Página)
+                if ((e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+                    e.key === 'U' || 
+                    e.key === 'S') {
+                    
+                    e.preventDefault();
+                    // Eliminado: showToast("Acceso restringido: Atajo de teclado deshabilitado."); 
+                }
+            }
+        });
+
     </script>
 </body>
 </html>
-
-
