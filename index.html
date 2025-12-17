@@ -85,6 +85,23 @@
             overflow: hidden; 
         }
 
+        /* --- REGLAS DE SEGURIDAD VISUAL Y COPIADO --- */
+        body { 
+            /* Aplica user-select: none; en la etiqueta <body> */
+            user-select: none; 
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Fuerza la reactivación de la selección y cursor para campos de entrada */
+        input, textarea {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
+
         /* --- SCROLL INVISIBLE GLOBAL --- */
         *::-webkit-scrollbar {
             display: none;
@@ -640,7 +657,7 @@
                         <!-- RECUADRO DE LIMITACIONES (NUEVO) -->
                         <div class="bg-yellow-50 border border-yellow-200 p-2 rounded-lg">
                             <p class="text-[10px] text-yellow-800 font-semibold flex items-center gap-1">
-                                <svg class="w-3 h-3 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 CONSIDERACIONES IMPORTANTES
                             </p>
                             <ul class="text-[9px] text-yellow-700 list-disc list-inside space-y-0.5 ml-2 mt-1 leading-tight">
@@ -1182,9 +1199,9 @@
                     return response; 
                 } catch (err) {
                     lastError = err;
-                    if (i === retries - 1) throw err;
                     const loaderSubtitle = document.querySelector('#loader p');
                     if (loaderSubtitle) loaderSubtitle.innerText = `Reintentando conexión con servidor (${i+1}/${retries})...`;
+                    if (i === retries - 1) throw err;
                     await new Promise(resolve => setTimeout(resolve, delay));
                     delay *= 1.5; 
                 }
@@ -1459,7 +1476,6 @@
             // Deshabilitar F12
             if (e.key === 'F12') {
                 e.preventDefault();
-                // Eliminado: showToast("Acceso restringido: La tecla F12 está deshabilitada.");
                 return;
             }
             
@@ -1477,9 +1493,19 @@
                     e.key === 'S') {
                     
                     e.preventDefault();
-                    // Eliminado: showToast("Acceso restringido: Atajo de teclado deshabilitado."); 
                 }
             }
+        });
+        
+        // --- BLOQUEAR COPIADO EXCEPTO EN CAMPOS DE ENTRADA ---
+        document.addEventListener('copy', function(e) {
+            const activeElement = document.activeElement;
+            // Permitir el copiado si el elemento activo es un INPUT o TEXTAREA
+            if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+                return; // Permitir acción por defecto (copiar)
+            }
+            // Bloquear el copiado en cualquier otro lugar
+            e.preventDefault();
         });
 
     </script>
